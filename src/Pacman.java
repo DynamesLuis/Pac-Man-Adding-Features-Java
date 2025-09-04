@@ -184,6 +184,7 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
             g.drawString(text3, x3, y3 + 160);
         } else {
             g.drawString("x" + lives + " Score: " + score, tileSize/2, tileSize/2);
+            g.drawString("High Score: " + highScore, tileSize/2, tileSize);
         }
 
         if (isPaused) {
@@ -267,6 +268,7 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
         for (Block food : foods) {
             if (collition(pacman, food)) {
                 score += 10;
+                checkNewHighScore();
                 foodEaten = food;
             }
         }
@@ -301,11 +303,17 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
         }
     }
 
+    public void checkNewHighScore() {
+        if (highScore == 0) highScore = score;
+        highScore = score > highScore ? score : highScore;
+    }
+
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         move();
         repaint();
         if (gameOver) {
+
             gameLoop.stop();
         }
         if (isPaused) {

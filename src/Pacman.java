@@ -232,13 +232,36 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
 
         g.setFont(new Font("Arial", Font.PLAIN, 18));
         if (gameOver) {
-            g.drawString("Game Over: " + score, tileSize/2, tileSize/2);
+            g.setColor(new Color(0, 0, 0, 150));
+            g.fillRect(0, 0, getWidth(), getHeight());
+            g.setColor(Color.red);
+            g.setFont(new Font("ink Free", Font.BOLD, 75));
+            FontMetrics fm1 = g.getFontMetrics();
+            String text = "GAME OVER";
+            int x = (getWidth() - fm1.stringWidth(text)) / 2;
+            int y = getHeight() / 2;
+            g.drawString(text, x, y);
+            g.setFont(new Font("ink Free", Font.BOLD, 50));
+            FontMetrics fm2 = g.getFontMetrics();
+            int x2 = (getWidth() - fm2.stringWidth(text)) / 2;
+            int y2 = getHeight() / 2;
+            g.setColor(Color.WHITE);
+            g.drawString("Score: " + score, x2, y2 + 80);
+            g.setFont(new Font("ink Free", Font.BOLD, 75));
+
+            g.setFont(new Font("ink Free", Font.BOLD, 30));
+            FontMetrics fm3 = g.getFontMetrics();
+            String text3 = "Press Enter to restart!";
+            int x3 = (getWidth() - fm3.stringWidth(text3)) / 2;
+            int y3 = getHeight() / 2;
+            g.setColor(Color.WHITE);
+            g.drawString(text3, x3, y3 + 160);
         } else {
             g.drawString("x" + lives + " Score: " + score, tileSize/2, tileSize/2);
         }
 
         if (isPaused) {
-            g.setColor(new Color(0, 0, 0, 150)); // Fondo semi-transparente
+            g.setColor(new Color(0, 0, 0, 150));
             g.fillRect(0, 0, getWidth(), getHeight());
 
             g.setColor(Color.WHITE);
@@ -376,7 +399,8 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
 
     @Override
     public void keyReleased(KeyEvent keyEvent) {
-        if (gameOver) {
+        if (gameOver &&
+            keyEvent.getKeyCode() == KeyEvent.VK_ENTER) {
             loadMap();
             resetPositions();
             lives = 3;

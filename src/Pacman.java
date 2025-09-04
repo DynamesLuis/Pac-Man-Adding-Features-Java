@@ -111,6 +111,7 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
     boolean gameOver = false;
     long powerStartTime;
     int powerDuration = 5000;
+    boolean isPaused = false;
     //X = wall, O = skip, P = pac man, ' ' = food
     //Ghosts: b = blue, o = orange, p = pink, r = red
     private String[] tileMap = {
@@ -344,10 +345,13 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
         if (gameOver) {
             gameLoop.stop();
         }
+        if (isPaused) {
+            gameLoop.stop();
+        }
+
         long elapsed = System.currentTimeMillis() - powerStartTime;
         if (elapsed >= powerDuration) {
             setNotScare();
-            // se acabó el poder
         }
     }
     @Override
@@ -378,6 +382,12 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
         }
         if (keyEvent.getKeyCode() == KeyEvent.VK_LEFT) {
             pacman.updateDirection('L');
+        }
+        if (keyEvent.getKeyCode() == KeyEvent.VK_SPACE) {
+            isPaused = !isPaused;
+            if (!isPaused) {
+                gameLoop.start();
+            }
         }
 
         if (pacman.direction == 'U'){

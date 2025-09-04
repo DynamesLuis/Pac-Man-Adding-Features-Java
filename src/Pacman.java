@@ -8,83 +8,9 @@ import java.util.HashSet;
 import java.util.Random;
 
 public class Pacman extends JPanel implements ActionListener, KeyListener {
-    class Block {
-        int x;
-        int y;
-        int width;
-        int height;
-        Image image;
-        Image previousImage;
-        int initialX;
-        int initialY;
-        char direction = 'U';
-        int velocityX = 0;
-        int velocityY = 0;
-        boolean isScared = false;
-
-        Block(Image image, int x, int y, int width, int height) {
-            this.image = image;
-            this.previousImage = image;
-            this.x = x;
-            this.y = y;
-            this.height = height;
-            this.width = width;
-            this.initialX = x;
-            this.initialY = y;
-        }
-
-        void updateDirection (char direction) {
-            char prevDirection = this.direction;
-            this.direction = direction;
-            updateVelocity();
-            this.x += this.velocityX;
-            this.y += this.velocityY;
-            for (Block wall: walls) {
-                if (collition(this, wall)) {
-                    this.x -= this.velocityX;
-                    this.y -= this.velocityY;
-                    this.direction = prevDirection;
-                    updateVelocity();
-                }
-            }
-        }
-
-        void updateVelocity() {
-            if (this.direction == 'U') {
-                this.velocityX = 0;
-                this.velocityY = -tileSize/4;
-            }
-            if (this.direction == 'D') {
-                this.velocityX = 0;
-                this.velocityY = tileSize/4;
-            }
-            if (this.direction == 'R') {
-                this.velocityX = tileSize/4;
-                this.velocityY = 0;
-            }
-            if (this.direction == 'L') {
-                this.velocityX = -tileSize/4;
-                this.velocityY = 0;
-            }
-        }
-
-        void reset() {
-            this.x = this.initialX;
-            this.y = this.initialY;
-        }
-
-        void setScaredImage() {
-            this.image = scaredGhost;
-        }
-
-        void setNormalImage() {
-            this.image = previousImage;
-        }
-    }
-
     private int rowCount = 21;
     private int columnCount = 19;
-    private int tileSize = 32;
+    int tileSize = 32;
     private int boardWidth = columnCount * tileSize;
     private int boardHeight = rowCount * tileSize;
     private Image wallImage;
@@ -97,7 +23,7 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
     private Image pacmanRightImage;
     private Image pacmanLeftImage;
     private Image powerFoodImage;
-    private Image scaredGhost;
+    Image scaredGhost;
     HashSet<Block> walls;
     HashSet<Block> foods;
     HashSet<Block> ghosts;
@@ -176,35 +102,35 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
                 int y = r*tileSize;
 
                 if (tileMapChar == 'X') {
-                    Block wall = new Block(wallImage, x, y, tileSize, tileSize);
+                    Block wall = new Block(wallImage, x, y, tileSize, tileSize, this);
                     walls.add(wall);
                 }
                 if (tileMapChar == 'b') {
-                    Block ghost = new Block(blueGhostImage, x, y, tileSize, tileSize);
+                    Block ghost = new Block(blueGhostImage, x, y, tileSize, tileSize, this);
                     ghosts.add(ghost);
                 }
                 if (tileMapChar == 'p') {
-                    Block ghost = new Block(pinkGhostImage, x, y, tileSize, tileSize);
+                    Block ghost = new Block(pinkGhostImage, x, y, tileSize, tileSize, this);
                     ghosts.add(ghost);
                 }
                 if (tileMapChar == 'r') {
-                    Block ghost = new Block(redGhostImage, x, y, tileSize, tileSize);
+                    Block ghost = new Block(redGhostImage, x, y, tileSize, tileSize, this);
                     ghosts.add(ghost);
                 }
                 if (tileMapChar == 'o') {
-                    Block ghost = new Block(orangeGhostImage, x, y, tileSize, tileSize);
+                    Block ghost = new Block(orangeGhostImage, x, y, tileSize, tileSize, this);
                     ghosts.add(ghost);
                 }
                 if (tileMapChar == 'P') {
-                    pacman = new Block(pacmanRightImage, x, y, tileSize, tileSize);
+                    pacman = new Block(pacmanRightImage, x, y, tileSize, tileSize, this);
                 }
                 if (tileMapChar == ' ') {
-                    Block food = new Block(null, x + 14, y + 14, 4, 4);
+                    Block food = new Block(null, x + 14, y + 14, 4, 4, this);
                     foods.add(food);
                 }
                 //new feature: power food
                 if (tileMapChar == 'F') {
-                    powerFood = new Block(powerFoodImage,x, y, tileSize, tileSize);
+                    powerFood = new Block(powerFoodImage,x, y, tileSize, tileSize, this);
                 }
             }
         }

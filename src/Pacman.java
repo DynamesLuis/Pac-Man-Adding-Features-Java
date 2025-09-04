@@ -107,6 +107,7 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
     char[] directions = {'U', 'D', 'L', 'R'};
     Random random = new Random();
     int score = 0;
+    int highScore = 0;
     int lives = 3;
     boolean gameOver = false;
     long powerStartTime;
@@ -234,6 +235,19 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
             g.drawString("Game Over: " + score, tileSize/2, tileSize/2);
         } else {
             g.drawString("x" + lives + " Score: " + score, tileSize/2, tileSize/2);
+        }
+
+        if (isPaused) {
+            g.setColor(new Color(0, 0, 0, 150)); // Fondo semi-transparente
+            g.fillRect(0, 0, getWidth(), getHeight());
+
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Arial", Font.BOLD, 40));
+            FontMetrics fm = g.getFontMetrics();
+            String text = "GAME PAUSED";
+            int x = (getWidth() - fm.stringWidth(text)) / 2;
+            int y = getHeight() / 2;
+            g.drawString(text, x, y);
         }
     }
 

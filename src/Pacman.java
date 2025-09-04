@@ -14,14 +14,17 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
         int width;
         int height;
         Image image;
+        Image previousImage;
         int initialX;
         int initialY;
         char direction = 'U';
         int velocityX = 0;
         int velocityY = 0;
+        boolean isScared = false;
 
         Block(Image image, int x, int y, int width, int height) {
             this.image = image;
+            this.previousImage = image;
             this.x = x;
             this.y = y;
             this.height = height;
@@ -69,6 +72,14 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
             this.x = this.initialX;
             this.y = this.initialY;
         }
+
+        void setScaredImage() {
+            this.image = scaredGhost;
+        }
+
+        void setNormalImage() {
+            this.image = previousImage;
+        }
     }
 
     private int rowCount = 21;
@@ -85,23 +96,28 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
     private Image pacmanDownImage;
     private Image pacmanRightImage;
     private Image pacmanLeftImage;
+    private Image powerFoodImage;
+    private Image scaredGhost;
     HashSet<Block> walls;
     HashSet<Block> foods;
     HashSet<Block> ghosts;
     Block pacman;
+    Block powerFood;
     Timer gameLoop;
     char[] directions = {'U', 'D', 'L', 'R'};
     Random random = new Random();
     int score = 0;
     int lives = 3;
     boolean gameOver = false;
+    long powerStartTime;
+    int powerDuration = 5000;
     //X = wall, O = skip, P = pac man, ' ' = food
     //Ghosts: b = blue, o = orange, p = pink, r = red
     private String[] tileMap = {
             "XXXXXXXXXXXXXXXXXXX",
             "X        X        X",
             "X XX XXX X XXX XX X",
-            "X                 X",
+            "X    F            X",
             "X XX X XXXXX X XX X",
             "X    X       X    X",
             "XXXX XXXX XXXX XXXX",
@@ -135,6 +151,8 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
         pacmanDownImage = new ImageIcon(getClass().getResource("./pacmanDown.png")).getImage();
         pacmanRightImage = new ImageIcon(getClass().getResource("./pacmanRight.png")).getImage();
         pacmanLeftImage = new ImageIcon(getClass().getResource("./pacmanLeft.png")).getImage();
+        powerFoodImage = new ImageIcon(getClass().getResource("./powerFood.png")).getImage();
+        scaredGhost = new ImageIcon(getClass().getResource("./scaredGhost.png")).getImage();
         loadMap();
         for (Block ghost : ghosts) {
             char newDirection = directions[random.nextInt(4)];
@@ -182,6 +200,10 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
                     Block food = new Block(null, x + 14, y + 14, 4, 4);
                     foods.add(food);
                 }
+                //new feature: power food
+                if (tileMapChar == 'F') {
+                    powerFood = new Block(powerFoodImage,x, y, tileSize, tileSize);
+                }
             }
         }
     }
@@ -192,6 +214,9 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
 
     public void draw(Graphics g) {
         g.drawImage(pacman.image,pacman.x, pacman.y, pacman.width, pacman.height, null);
+        if (powerFood != null) {
+            g.drawImage(powerFood.image, powerFood.x, powerFood.y, powerFood.width, powerFood.height, null);
+        }
         for (Block wall : walls) {
             g.drawImage(wall.image, wall.x, wall.y, wall.width, wall.height, null);
         }
@@ -221,6 +246,18 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
             pacman.x = 0;
          }
         //
+        //new feature: power food
+        if (powerFood != null) {
+            if (collition(pacman, powerFood)) {
+                for (Block ghost: ghosts) {
+                    powerStartTime = System.currentTimeMillis();
+                    ghost.isScared = true;
+                    ghost.setScaredImage();
+                }
+                powerFood = null;
+            }
+        }
+
         for (Block wall : walls) {
             if (collition(pacman, wall)) {
                 pacman.x -= pacman.velocityX;
@@ -228,10 +265,16 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
                 break;
             }
         }
-
+        Block ghostEaten = null;
         for (Block ghost : ghosts) {
             if (collition(ghost, pacman)) {
-                lives -= 1;
+                if (ghost.isScared) {
+                    ghostEaten = ghost;
+                    continue;//error
+                } else {
+                    lives -= 1;
+                }
+
                 if (lives == 0) {
                     gameOver = true;
                     return;
@@ -254,6 +297,8 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
                 }
             }
         }
+        ghosts.remove(ghostEaten);
+
         Block foodEaten = null;
         for (Block food : foods) {
             if (collition(pacman, food)) {
@@ -285,12 +330,24 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
         }
     }
 
+    public void setNotScare() {
+        for (Block ghost: ghosts) {
+            ghost.isScared = false;
+            ghost.setNormalImage();
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         move();
         repaint();
         if (gameOver) {
             gameLoop.stop();
+        }
+        long elapsed = System.currentTimeMillis() - powerStartTime;
+        if (elapsed >= powerDuration) {
+            setNotScare();
+            // se acabó el poder
         }
     }
     @Override

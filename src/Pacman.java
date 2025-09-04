@@ -144,17 +144,17 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
         setFocusable(true);
         setPreferredSize(new Dimension(boardWidth, boardHeight));
         setBackground(Color.BLACK);
-        wallImage = new ImageIcon(getClass().getResource("./wall.png")).getImage();
-        blueGhostImage = new ImageIcon(getClass().getResource("./blueGhost.png")).getImage();
-        orangeGhostImage = new ImageIcon(getClass().getResource("./orangeGhost.png")).getImage();
-        pinkGhostImage = new ImageIcon(getClass().getResource("./pinkGhost.png")).getImage();
-        redGhostImage = new ImageIcon(getClass().getResource("./redGhost.png")).getImage();
-        pacmanUpImage = new ImageIcon(getClass().getResource("./pacmanUp.png")).getImage();
-        pacmanDownImage = new ImageIcon(getClass().getResource("./pacmanDown.png")).getImage();
-        pacmanRightImage = new ImageIcon(getClass().getResource("./pacmanRight.png")).getImage();
-        pacmanLeftImage = new ImageIcon(getClass().getResource("./pacmanLeft.png")).getImage();
-        powerFoodImage = new ImageIcon(getClass().getResource("./powerFood.png")).getImage();
-        scaredGhost = new ImageIcon(getClass().getResource("./scaredGhost.png")).getImage();
+        wallImage = new ImageIcon(getClass().getResource("./images/wall.png")).getImage();
+        blueGhostImage = new ImageIcon(getClass().getResource("./images/blueGhost.png")).getImage();
+        orangeGhostImage = new ImageIcon(getClass().getResource("./images/orangeGhost.png")).getImage();
+        pinkGhostImage = new ImageIcon(getClass().getResource("./images/pinkGhost.png")).getImage();
+        redGhostImage = new ImageIcon(getClass().getResource("./images/redGhost.png")).getImage();
+        pacmanUpImage = new ImageIcon(getClass().getResource("./images/pacmanUp.png")).getImage();
+        pacmanDownImage = new ImageIcon(getClass().getResource("./images/pacmanDown.png")).getImage();
+        pacmanRightImage = new ImageIcon(getClass().getResource("./images/pacmanRight.png")).getImage();
+        pacmanLeftImage = new ImageIcon(getClass().getResource("./images/pacmanLeft.png")).getImage();
+        powerFoodImage = new ImageIcon(getClass().getResource("./images/powerFood.png")).getImage();
+        scaredGhost = new ImageIcon(getClass().getResource("./images/scaredGhost.png")).getImage();
         loadMap();
         for (Block ghost : ghosts) {
             char newDirection = directions[random.nextInt(4)];

@@ -45,7 +45,7 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
             "XXXXXXXXXXXXXXXXXXX",
             "X        X        X",
             "X XX XXX X XXX XX X",
-            "X    F            X",
+            "X                 X",
             "X XX X XXXXX X XX X",
             "X    X       X    X",
             "XXXX XXXX XXXX XXXX",
@@ -129,11 +129,24 @@ public class Pacman extends JPanel implements ActionListener, KeyListener {
                     foods.add(food);
                 }
                 //new feature: power food
-                if (tileMapChar == 'F') {
-                    powerFood = new Block(powerFoodImage,x, y, tileSize, tileSize, this);
-                }
+                //if (tileMapChar == 'F') {
+                  //  powerFood = new Block(powerFoodImage,x, y, tileSize, tileSize, this);
+                //}
             }
         }
+        //replace random food with power food
+        int item = new Random().nextInt(foods.size()); // In real life, the Random object should be rather more shared than this
+        int i = 0;
+        Block randomFood = null;
+        for(Block food : foods) {
+            if (i == item) {
+                randomFood = food;
+            }
+            i++;
+        }
+        powerFood = new Block(powerFoodImage,randomFood.x - 14, randomFood.y - 14, tileSize, tileSize, this);
+        foods.remove(randomFood);
+
     }
     public void paintComponent(Graphics g) {
         super.paintComponent(g);

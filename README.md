@@ -33,6 +33,10 @@ New Features:
   javac Main.java
   java Main
 
+### Controls
+- Arrow Up/Down/Left/Right: Move
+- Space Bar: Pause and unpause the game
+- Enter: Restart game (when game over)
 ---
 
 ## 📚 Learnings
